@@ -1,7 +1,7 @@
 const randomstring = require('randomstring')
 const { URL, URLSearchParams } = require('url')
 
-exports.handler = (event, context, callback) => {
+exports.handler = async (event, context) => {
     const {
         GIT_HOSTNAME='https://github.com',
         OAUTH_AUTHORIZE_PATH='/login/oauth/authorize',
@@ -10,7 +10,7 @@ exports.handler = (event, context, callback) => {
     } = event.stageVariables || {}
 
     if (!CLIENT_ID)
-        callback(new Error('No client_id configured for authorization.'))
+        throw new Error('No client_id configured for authorization.')
 
     const state = randomstring.generate(32)
 
@@ -22,12 +22,12 @@ exports.handler = (event, context, callback) => {
         state: state
     })
 
-    return callback(null, {
+    return {
         statusCode: 302,
         headers: {
             'Location': authURL.toString(),
             'Set-Cookie': `state=${state}; Max-Age=600; Domain=${event.headers.Host}; Path=/${event.requestContext.stage}/callback; Secure; HttpOnly`,
         },
         body: null
-    })
+    }
 }
