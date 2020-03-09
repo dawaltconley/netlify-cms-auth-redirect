@@ -10,5 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "randomstring": "^1.1.5"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.562.0"
   }
 }

@@ -1,5 +1,22 @@
 const randomstring = require('randomstring')
 const { URL, URLSearchParams } = require('url')
+const AWS = require('aws-sdk')
+AWS.config.update({ region: 'us-east-1' })
+
+const kms = new AWS.KMS()
+const encrypt = params => new Promise((resolve, reject) => kms.encrypt(params, (e, r) => e ? reject(e) : resolve(r)))
+// const encrypt = (params, { region }={}) => new Promise((resolve, reject) => {
+//     if (region)
+//         AWS.config.update({ region: region })
+//     kms.encrypt(params, (err, data) => {
+//         if (err) {
+//             reject(err)
+//         } else if (data === null) {
+//             reject(new Error('Unable to encrypt key, KMS returned null. This is likely due to a lack of decryption permissions.'))
+//         }
+//         resolve(data.CiphertextBlob.toString('ascii'))
+//     })
+// })
 
 exports.handler = async (event, context) => {
     const {
