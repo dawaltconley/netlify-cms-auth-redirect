@@ -22,11 +22,17 @@ exports.handler = async (event, context) => {
         state: state
     })
 
+    // let eState = await encrypt({
+    //     KeyId: 'bfc9c59c-7876-43e1-b436-006d62b19ea8',
+    //     Plaintext: state
+    // })
+    // eState = eState.CiphertextBlob.toString()
+
     return {
         statusCode: 302,
         headers: {
             'Location': authURL.toString(),
-            'Set-Cookie': `state=${state}; Max-Age=600; Domain=${event.headers.Host}; Path=/${event.requestContext.stage}/callback; Secure; HttpOnly`,
+            'Set-Cookie': `state=${state}; Max-Age=600; Domain=${event.requestContext.domainName}; Path=${event.requestContext.path.replace(/(?<=\/)auth$/, 'callback')}; Secure; HttpOnly`,
         },
         body: null
     }
